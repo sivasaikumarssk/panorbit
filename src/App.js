@@ -1,10 +1,17 @@
 
+import { Route, Routes } from 'react-router';
 import './App.css';
-
+import { Home } from './components/Home';
+import ProfilePage from './components/ProfilePage';
 function App() {
+  
   return (
     <div className='App' >
-     <h2 className="text-3xl font-bold underline">test</h2>
+     
+     <Routes>
+     <Route path='/' element={<Home/>}/>
+     <Route path='/test' element={<ProfilePage/>}/>
+     </Routes>
     </div>
   );
 }
