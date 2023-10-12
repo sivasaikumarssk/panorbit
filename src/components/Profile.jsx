@@ -8,7 +8,8 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import { Divider } from "@mui/material";
 import axios from "axios";
-
+import { useNavigate } from "react-router";
+import Cookies from "universal-cookie";
 // const style = {
 //   position: "absolute",
 //   top: "50%",
@@ -25,14 +26,15 @@ const Profile = ({ index }) => {
   console.log("index", index);
   const styles = {
     width: "100%",
-    maxWidth: 300,
+    maxWidth: 280,
     bgcolor: "background.paper",
     height: "50vh",
     borderRadius: "5%",
     marginTop: "10%",
     marginLeft: "65%",
+    overflow: "hidden",
   };
-
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [usersList, setUsersList] = useState([]);
   const [address, setAddress] = useState([]);
@@ -40,7 +42,7 @@ const Profile = ({ index }) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  //   const cookies = new Cookies();
+  const cookies = new Cookies();
   useEffect(() => {
     const ifameData = document.getElementById("iframeId");
     ifameData.src = `https://maps.google.com/maps?q=${address?.geo?.lat},${address?.geo?.lng}&hl=es;&output=embed`;
@@ -49,13 +51,20 @@ const Profile = ({ index }) => {
     setData(JSON.parse(localStorage.getItem("user")));
     setAddress(JSON.parse(localStorage.getItem("user")).address);
     axios
-      .get("https://panorbit.in/api/users.json")
+      .get("https://panorbit.in/api/users.json?_limit=2")
       .then((res) => {
         console.log("usersList", res.data.users);
         setUsersList(res.data.users);
       })
       .catch((err) => console.log("error", err));
   }, []);
+  const handleChangeUser = () => {};
+  const handleSignout = () => {
+    cookies.remove("user");
+    localStorage.removeItem("user");
+
+    navigate("/");
+  };
 
   //   const handleClick = (e) => {
   //     console.log("click", data[e - 1]);
@@ -115,6 +124,34 @@ const Profile = ({ index }) => {
                   <small className="text-gray-500">{data.email}</small>
                 </div>
                 <Divider />
+                {/* userslist on the modal */}
+                <div className="h-[5vh]">
+                  {usersList
+                    ?.filter((el) => {
+                      if (el.id !== data.id) return true;
+                      else return false;
+                    })
+                    .map((ele) => {
+                      return (
+                        <div key={ele.id} className="h-[85px]">
+                          <List component="nav" aria-label="mailbox folders">
+                            <ListItem button onClick={handleChangeUser}>
+                              <Avatar alt={ele.name} src={ele.profilepicture} />{" "}
+                              &nbsp;
+                              <ListItemText primary={ele.name} />
+                            </ListItem>
+                            <Divider />
+                          </List>
+                        </div>
+                      );
+                    })}
+                </div>
+                <button
+                  onClick={handleSignout}
+                  className="bg-red-500 text-white p-[2%] w-[40%] rounded-3xl relative left-[30%] top-[55%]"
+                >
+                  Sign out
+                </button>
               </Box>
             </Modal>
           </div>
