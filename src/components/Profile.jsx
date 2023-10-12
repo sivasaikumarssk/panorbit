@@ -4,35 +4,37 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { useState, useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import { Divider } from "@mui/material";
+import axios from "axios";
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
+// const style = {
+//   position: "absolute",
+//   top: "50%",
+//   left: "50%",
+//   transform: "translate(-50%, -50%)",
+//   width: 400,
+//   bgcolor: "background.paper",
+//   border: "2px solid #000",
+//   boxShadow: 24,
+//   p: 4,
+// };
 
 const Profile = ({ index }) => {
   console.log("index", index);
-  const style = {
+  const styles = {
     width: "100%",
-    maxWidth: 360,
+    maxWidth: 300,
     bgcolor: "background.paper",
     height: "50vh",
     borderRadius: "5%",
+    marginTop: "10%",
+    marginLeft: "65%",
   };
 
   const [data, setData] = useState([]);
+  const [usersList, setUsersList] = useState([]);
   const [address, setAddress] = useState([]);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -46,6 +48,13 @@ const Profile = ({ index }) => {
   useEffect(() => {
     setData(JSON.parse(localStorage.getItem("user")));
     setAddress(JSON.parse(localStorage.getItem("user")).address);
+    axios
+      .get("https://panorbit.in/api/users.json")
+      .then((res) => {
+        console.log("usersList", res.data.users);
+        setUsersList(res.data.users);
+      })
+      .catch((err) => console.log("error", err));
   }, []);
 
   //   const handleClick = (e) => {
@@ -77,6 +86,7 @@ const Profile = ({ index }) => {
       </div>*/}
       <div className=" w-[90%] h-[90vh] rounded-3xl">
         <div className=" m-7 h-[10vh] w-[90%] rounded-3xl flex justify-between">
+          {/* Profile heading */}
           <div className="mt-[3%] font-semibold font-sans text-3xl text-gray-500">
             {index === 1
               ? "Posts"
@@ -86,6 +96,7 @@ const Profile = ({ index }) => {
               ? "ToDo"
               : "Profile"}
           </div>
+          {/* Logout and users profile change modal */}
           <div>
             <Modal
               open={open}
@@ -93,27 +104,23 @@ const Profile = ({ index }) => {
               aria-labelledby="modal-modal-title"
               aria-describedby="modal-modal-description"
             >
-              <Box sx={style}>
-                <ListItem>
-                  <Avatar alt={data.name} src={data.profilepicture} /> <br />
-                  <ListItemText primary={data.name} /> <br />
-                  <ListItemText primary={data.email} />
-                </ListItem>
+              <Box sx={styles}>
+                <div className="ml-[30%]">
+                  <Avatar
+                    alt={data.name}
+                    src={data.profilepicture}
+                    className="ml-[20%]"
+                  />
+                  <strong>{data.name}</strong> <br />
+                  <small className="text-gray-500">{data.email}</small>
+                </div>
                 <Divider />
-                {/* <Typography
-                  id="modal-modal-title"
-                  variant="h6"
-                  component="h2"
-                ></Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  Duis mollis, est non commodo luctus, nisi erat porttitor
-                  ligula.
-                </Typography> */}
               </Box>
             </Modal>
           </div>
+          {/* user image and logout  */}
           <div>
-            <List sx={style} component="nav" aria-label="mailbox folders">
+            <List component="nav" aria-label="mailbox folders">
               <ListItem button onClick={handleOpen}>
                 <Avatar alt={data.name} src={data.profilepicture} /> &nbsp;
                 <ListItemText primary={data.name} />
@@ -128,6 +135,7 @@ const Profile = ({ index }) => {
             margin: "auto",
           }}
         ></div>
+        {/* user profile details  */}
         {index === 0 ? (
           <div className="flex justify-around">
             <div className="border-0 border-none-500/100 h-[55vh] w-[40%] rounded-3xl ml-[8%]">
@@ -167,6 +175,7 @@ const Profile = ({ index }) => {
               City : {address?.city} <br />
               Zipcode : {address?.zipcode} <br />
             </div>
+            {/* google map based on lat and lng */}
             <div className="absolute top-[50%] ml-[20%] ">
               <iframe
                 id="iframeId"
