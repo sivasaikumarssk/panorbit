@@ -9,9 +9,9 @@ import { useState, useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Cookies from "universal-cookie";
 import PositionedSnackbar from "./Snackbar";
+import { useNavigate } from "react-router";
 
 const cookies = new Cookies();
-
 const style = {
   width: "100%",
   maxWidth: 360,
@@ -20,6 +20,7 @@ const style = {
 
 export const Home = () => {
   const [data, setData] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -34,8 +35,9 @@ export const Home = () => {
   const handleClick = (e) => {
     console.log("click", data[e - 1]);
     localStorage.setItem("user", JSON.stringify(data[e - 1]));
-    cookies.set("user", data[e - 1], { path: "/test" });
+    cookies.set("user", data[e - 1]);
     console.log("cookies value", cookies.get("user"));
+    navigate("/profile");
   };
   return (
     <>
