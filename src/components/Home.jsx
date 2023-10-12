@@ -8,7 +8,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Cookies from "universal-cookie";
-import ProfilePage from "./ProfilePage";
+import PositionedSnackbar from "./Snackbar";
 
 const cookies = new Cookies();
 
@@ -33,13 +33,14 @@ export const Home = () => {
 
   const handleClick = (e) => {
     console.log("click", data[e - 1]);
-    // localStorage.setItem("user", JSON.stringify(data[e - 1]));
-    cookies.set("user", data[e - 1], { path: "/" });
+    localStorage.setItem("user", JSON.stringify(data[e - 1]));
+    cookies.set("user", data[e - 1], { path: "/test" });
     console.log("cookies value", cookies.get("user"));
   };
   return (
     <>
       <div>
+        <PositionedSnackbar />
         <img className="h-[110vh] w-[100%] static" src={first} alt="main" />
         <div className="absolute top-[25%] left-[38%] h-[80vh] w-[23%] overflow-scroll rounded-2xl">
           <div className="bg-white p-[5%]">
