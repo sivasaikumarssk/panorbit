@@ -67,9 +67,9 @@ const Profile = ({ index }, props) => {
   const ifameData = document.getElementById("iframeId");
   const lat = 1.305385;
   const lon = 30.923029;
-  // useEffect(() => {
-  //   googleMapsFunction();
-  // }, [address]);
+  useEffect(() => {
+    googleMapsFunction();
+  }, [address]);
   const googleMapsFunction = () => {
     ifameData.src = `https://maps.google.com/maps?q=${
       address?.geo ? address?.geo?.lat : lat
