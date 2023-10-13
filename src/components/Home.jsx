@@ -32,7 +32,7 @@ export const Home = () => {
       .catch((err) => console.log("error", err));
   }, []);
 
-  const handleClick = (e) => {
+  const handleUsersClick = (e) => {
     console.log("click", data[e - 1]);
     localStorage.setItem("user", JSON.stringify(data[e - 1]));
     cookies.set("user", data[e - 1]);
@@ -52,7 +52,7 @@ export const Home = () => {
             return (
               <div key={ele.id}>
                 <List sx={style} component="nav" aria-label="mailbox folders">
-                  <ListItem button onClick={() => handleClick(ele.id)}>
+                  <ListItem button onClick={() => handleUsersClick(ele.id)}>
                     <Avatar alt={ele.name} src={ele.profilepicture} /> &nbsp;
                     <ListItemText primary={ele.name} />
                   </ListItem>
