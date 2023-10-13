@@ -15,8 +15,6 @@ import { Global } from "@emotion/react";
 import { styled } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { grey } from "@mui/material/colors";
-import Button from "@mui/material/Button";
-import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 
@@ -33,7 +31,6 @@ const StyledBox = styled(Box)(({ theme }) => ({
 }));
 
 const Profile = ({ index }, props) => {
-  console.log("index", index);
   const { window } = props;
   const [openChat, setOpenChat] = React.useState(false);
   const toggleDrawer = (newOpen) => () => {
@@ -64,16 +61,17 @@ const Profile = ({ index }, props) => {
   const handleClose = () => setOpen(false);
 
   const cookies = new Cookies();
-  const ifameData = document.getElementById("iframeId");
+  var ifameData;
   const lat = 1.305385;
   const lon = 30.923029;
   useEffect(() => {
     googleMapsFunction();
   }, [address]);
   const googleMapsFunction = () => {
-    ifameData.src = `https://maps.google.com/maps?q=${
-      address?.geo ? address?.geo?.lat : lat
-    },${address?.geo ? address?.geo?.lng : lon}&hl=es;&output=embed`;
+    ifameData = document.getElementById("iframeId");
+    if (index === 0) {
+      ifameData.src = `https://maps.google.com/maps?q=${address?.geo?.lat},${address?.geo?.lng}&hl=es;&output=embed`;
+    }
   };
   useEffect(() => {
     setData(JSON.parse(localStorage.getItem("user")));
@@ -81,7 +79,6 @@ const Profile = ({ index }, props) => {
     axios
       .get("https://panorbit.in/api/users.json?_limit=2")
       .then((res) => {
-        console.log("usersList", res.data.users);
         setUsersList(res.data?.users);
       })
       .catch((err) => console.log("error", err));
@@ -97,39 +94,13 @@ const Profile = ({ index }, props) => {
 
     navigate("/");
   };
-
-  //   const handleClick = (e) => {
-  //     console.log("click", data[e - 1]);
-  //     // localStorage.setItem("user", JSON.stringify(data[e - 1]));
-  //     cookies.set("user", data[e - 1], { path: "/" });
-  //     console.log("cookies value", cookies.get("user"));
-  //   };
-  //   const ListItems = ["Profile", "Posts", "Gallery", "ToDo"];
-
-  console.log("dta", data);
   return (
     <div className="flex ">
-      {/*<div className="border-2 border-indigo-500/100 w-[20%] h-[80vh] mt-[5%] rounded-3xl bg-blue-600 text-stone-400">
-         <div className="mt-[70%]">
-          {ListItems.map((el) => {
-            return (
-              <div key={el}>
-                <ListItem button>
-                  <ListItemText primary={el} className=" hover:text-white" />
-                </ListItem>
-                <Divider />
-              </div>
-            );
-          })}
-          
-        </div> 
-         <VerticalTabs /> 
-      </div>*/}
       <div className=" w-[90%] h-[90vh] rounded-3xl">
         <div
           className={" m-7 h-[10vh] w-[90%] rounded-3xl flex justify-between"}
         >
-          {/* Profile heading */}
+          {/*------------------------------ Profile heading ------------------------------*/}
           <div className="mt-[3%] font-semibold font-sans text-3xl text-gray-500">
             {index === 2
               ? "Posts"
@@ -139,7 +110,7 @@ const Profile = ({ index }, props) => {
               ? "ToDo"
               : "Profile"}
           </div>
-          {/* Logout and users profile change modal */}
+          {/* ------------------------------Logout and users profile change modal------------------------------ */}
           <div>
             <Modal
               open={open}
@@ -158,7 +129,7 @@ const Profile = ({ index }, props) => {
                   <small className="text-gray-500">{data?.email}</small>
                 </div>
                 <Divider />
-                {/* userslist on the modal */}
+                {/* ------------------------------userslist on the modal ------------------------------*/}
                 <div className="h-[5vh]">
                   {usersList
                     ?.filter((el) => {
@@ -192,7 +163,7 @@ const Profile = ({ index }, props) => {
               </Box>
             </Modal>
           </div>
-          {/* user image and logout  */}
+          {/*------------------------------ user image and logout ------------------------------ */}
           <div>
             <List component="nav" aria-label="mailbox folders">
               <ListItem button onClick={handleOpen}>
@@ -209,7 +180,7 @@ const Profile = ({ index }, props) => {
             margin: "auto",
           }}
         ></div>
-        {/* user profile details  */}
+        {/*------------------------------ user profile details  ------------------------------*/}
         {index === 0 ? (
           <div className="flex justify-around">
             <div className="border-0 border-none-500/100 h-[55vh] w-[40%] rounded-3xl ml-[8%]">
@@ -250,7 +221,7 @@ const Profile = ({ index }, props) => {
               City : <strong>{address?.city} </strong> <br />
               Zipcode : <strong>{address?.zipcode} </strong> <br />
             </div>
-            {/* google map based on lat and lng */}
+            {/*------------------------------ google map based on lat and lng ------------------------------*/}
             <div className="absolute top-[50%] ml-[20%] ">
               <iframe
                 id="iframeId"
@@ -272,7 +243,7 @@ const Profile = ({ index }, props) => {
           />
         )}
       </div>
-      {/* chat drawer */}
+      {/*------------------------------ chat drawer ------------------------------*/}
       <div className="w-[10%]">
         <Root>
           <CssBaseline />
@@ -363,7 +334,6 @@ const Profile = ({ index }, props) => {
                     </div>
                   );
                 })}
-              {/* <Skeleton variant="rectangular" height="100%" /> */}
             </StyledBox>
           </SwipeableDrawer>
         </Root>

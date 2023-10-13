@@ -10,7 +10,7 @@ import Profile from "./Profile";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
-  console.log("tabsprops", props);
+
   return (
     <div
       role="tabpanel"
@@ -48,9 +48,7 @@ const styles = {
 
 export default function VerticalTabs() {
   const [value, setValue] = React.useState(0);
-  console.log("valeu", value);
   const handleChange = (event, newValue) => {
-    console.log("new", newValue - 2);
     setValue(newValue);
   };
 
