@@ -40,9 +40,8 @@ const Profile = ({ index }, props) => {
     setOpenChat(newOpen);
   };
 
-  const handleChatOpen = () => {
-    console.log(openChat);
-    setOpenChat(!openChat);
+  const handleChatOpen = (e) => {
+    e.target.tagName == "P" && setOpenChat(!openChat);
   };
   const container =
     window !== undefined ? () => window().document.body : undefined;
@@ -289,7 +288,7 @@ const Profile = ({ index }, props) => {
           />
 
           <SwipeableDrawer
-            allowSwipeInChildren={true}
+            allowSwipeInChildren={handleChatOpen}
             container={container}
             anchor="bottom"
             open={openChat}
