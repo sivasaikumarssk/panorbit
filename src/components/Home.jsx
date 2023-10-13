@@ -26,17 +26,14 @@ export const Home = () => {
     axios
       .get("https://panorbit.in/api/users.json")
       .then((res) => {
-        console.log("res", res.data.users);
         setData(res.data.users);
       })
       .catch((err) => console.log("error", err));
   }, []);
 
   const handleUsersClick = (e) => {
-    console.log("click", data[e - 1]);
     localStorage.setItem("user", JSON.stringify(data[e - 1]));
     cookies.set("user", data[e - 1]);
-    console.log("cookies value", cookies.get("user"));
     navigate("/profile");
   };
   return (

@@ -2,7 +2,7 @@
 import { Route, Routes } from 'react-router';
 import './App.css';
 import { Home } from './components/Home';
-import ProfilePage from './components/ProfilePage';
+import VerticalTabs from './components/Tabs';
 function App() {
   
   return (
@@ -10,7 +10,7 @@ function App() {
      
      <Routes>
      <Route path='/' element={<Home/>}/>
-     <Route path='/profile' element={<ProfilePage />}/>
+     <Route path='/profile' element={<VerticalTabs />}/>
      </Routes>
     </div>
   );
