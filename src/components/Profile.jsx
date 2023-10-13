@@ -285,7 +285,7 @@ const Profile = ({ index }, props) => {
         ) : (
           <img
             className="h-[70vh] w-[1000px]"
-            src="https://img.freepik.com/free-vector/coming-soon-background-with-focus-light-effect-design_1017-27277.jpg?w=740&t=st=1697021501~exp=1697022101~hmac=9728ed32e1f40d973e953be62a46180d8a7a21033bd3f2ff0ec93e58df08a325"
+            src="https://imgs.search.brave.com/og-WbxXrIXYBqXFzIv122yibGRx7ITot-TA9DVW6GjM/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9jZG4u/dmVjdG9yc3RvY2su/Y29tL2kvcHJldmll/dy0xeC8yNy8xNS9j/b21pbmctc29vbi1z/aWduLWlzb2xhdGVk/LW9uLXdoaXRlLWJh/Y2tncm91bmQtdmVj/dG9yLTIwMjUyNzE1/LmpwZw"
             alt="comingsoon"
           />
         )}
