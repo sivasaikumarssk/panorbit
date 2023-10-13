@@ -6,10 +6,19 @@ import { useState, useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import { Divider } from "@mui/material";
+import { Divider, Radio } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import Cookies from "universal-cookie";
+import PropTypes from "prop-types";
+import { Global } from "@emotion/react";
+import { styled } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { grey } from "@mui/material/colors";
+import Button from "@mui/material/Button";
+import Skeleton from "@mui/material/Skeleton";
+import Typography from "@mui/material/Typography";
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 // const style = {
 //   position: "absolute",
 //   top: "50%",
@@ -22,8 +31,40 @@ import Cookies from "universal-cookie";
 //   p: 4,
 // };
 
-const Profile = ({ index }) => {
+// chat drawer constants
+const drawerBleeding = 56;
+
+const Root = styled("div")(({ theme }) => ({
+  height: "100%",
+  backgroundColor:
+    theme.palette.mode === "light"
+      ? grey[100]
+      : theme.palette.background.default,
+}));
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === "light" ? "#fff" : grey[800],
+}));
+
+const Puller = styled(Box)(({ theme }) => ({
+  width: 30,
+  height: 6,
+  backgroundColor: theme.palette.mode === "light" ? grey[300] : grey[900],
+  borderRadius: 3,
+  position: "absolute",
+  top: 8,
+  left: "calc(50% - 15px)",
+}));
+
+const Profile = ({ index }, props) => {
   console.log("index", index);
+  const { window } = props;
+  const [openChat, setOpenChat] = React.useState(false);
+  const toggleDrawer = (newOpen) => () => {
+    setOpenChat(newOpen);
+  };
+  const container =
+    window !== undefined ? () => window().document.body : undefined;
   const styles = {
     width: "100%",
     maxWidth: 280,
@@ -43,22 +84,33 @@ const Profile = ({ index }) => {
   const handleClose = () => setOpen(false);
 
   const cookies = new Cookies();
-  useEffect(() => {
-    const ifameData = document.getElementById("iframeId");
-    ifameData.src = `https://maps.google.com/maps?q=${address?.geo?.lat},${address?.geo?.lng}&hl=es;&output=embed`;
-  });
+  const ifameData = document.getElementById("iframeId");
+  const lat = 1.305385;
+  const lon = 30.923029;
+  // useEffect(() => {
+  //   googleMapsFunction();
+  // }, [address]);
+  const googleMapsFunction = () => {
+    ifameData.src = `https://maps.google.com/maps?q=${
+      address?.geo ? address?.geo?.lat : lat
+    },${address?.geo ? address?.geo?.lng : lon}&hl=es;&output=embed`;
+  };
   useEffect(() => {
     setData(JSON.parse(localStorage.getItem("user")));
-    setAddress(JSON.parse(localStorage.getItem("user")).address);
+    setAddress(JSON.parse(localStorage.getItem("user"))?.address);
     axios
       .get("https://panorbit.in/api/users.json?_limit=2")
       .then((res) => {
         console.log("usersList", res.data.users);
-        setUsersList(res.data.users);
+        setUsersList(res.data?.users);
       })
       .catch((err) => console.log("error", err));
-  }, []);
-  const handleChangeUser = () => {};
+  }, [open]);
+  const handleChangeUser = (e) => {
+    localStorage.setItem("user", JSON.stringify(usersList[e - 1]));
+    cookies.set("user", usersList[e - 1]);
+    setOpen(false);
+  };
   const handleSignout = () => {
     cookies.remove("user");
     localStorage.removeItem("user");
@@ -94,14 +146,16 @@ const Profile = ({ index }) => {
          <VerticalTabs /> 
       </div>*/}
       <div className=" w-[90%] h-[90vh] rounded-3xl">
-        <div className=" m-7 h-[10vh] w-[90%] rounded-3xl flex justify-between">
+        <div
+          className={" m-7 h-[10vh] w-[90%] rounded-3xl flex justify-between"}
+        >
           {/* Profile heading */}
           <div className="mt-[3%] font-semibold font-sans text-3xl text-gray-500">
-            {index === 1
+            {index === 2
               ? "Posts"
-              : index === 2
+              : index === 4
               ? "Gallery"
-              : index === 3
+              : index === 6
               ? "ToDo"
               : "Profile"}
           </div>
@@ -116,12 +170,12 @@ const Profile = ({ index }) => {
               <Box sx={styles}>
                 <div className="ml-[30%]">
                   <Avatar
-                    alt={data.name}
-                    src={data.profilepicture}
+                    alt={data?.name}
+                    src={data?.profilepicture}
                     className="ml-[20%]"
                   />
-                  <strong>{data.name}</strong> <br />
-                  <small className="text-gray-500">{data.email}</small>
+                  <strong>{data?.name}</strong> <br />
+                  <small className="text-gray-500">{data?.email}</small>
                 </div>
                 <Divider />
                 {/* userslist on the modal */}
@@ -135,7 +189,10 @@ const Profile = ({ index }) => {
                       return (
                         <div key={ele.id} className="h-[85px]">
                           <List component="nav" aria-label="mailbox folders">
-                            <ListItem button onClick={handleChangeUser}>
+                            <ListItem
+                              button
+                              onClick={() => handleChangeUser(ele.id)}
+                            >
                               <Avatar alt={ele.name} src={ele.profilepicture} />{" "}
                               &nbsp;
                               <ListItemText primary={ele.name} />
@@ -159,7 +216,7 @@ const Profile = ({ index }) => {
           <div>
             <List component="nav" aria-label="mailbox folders">
               <ListItem button onClick={handleOpen}>
-                <Avatar alt={data.name} src={data.profilepicture} /> &nbsp;
+                <Avatar alt={data.name} src={data?.profilepicture} /> &nbsp;
                 <ListItemText primary={data.name} />
               </ListItem>
             </List>
@@ -225,15 +282,103 @@ const Profile = ({ index }) => {
               </small>
             </div>
           </div>
-        ) : index === 2 ? (
+        ) : (
           <img
+            className="h-[70vh] w-[1000px]"
             src="https://img.freepik.com/free-vector/coming-soon-background-with-focus-light-effect-design_1017-27277.jpg?w=740&t=st=1697021501~exp=1697022101~hmac=9728ed32e1f40d973e953be62a46180d8a7a21033bd3f2ff0ec93e58df08a325"
             alt="comingsoon"
           />
-        ) : (
-          ""
         )}
       </div>
+      {index === 0 ? (
+        <div className="w-[10%]">
+          <Root>
+            <CssBaseline />
+            <Global
+              styles={{
+                ".MuiDrawer-root > .MuiPaper-root": {
+                  height: `calc(50% - ${drawerBleeding}px)`,
+                  overflow: "visible",
+                },
+              }}
+            />
+            <Box sx={{ textAlign: "center", pt: 1 }}>
+              <Button onClick={toggleDrawer(true)}>Open</Button>
+            </Box>
+            <SwipeableDrawer
+              container={container}
+              anchor="bottom"
+              open={openChat}
+              onClose={toggleDrawer(false)}
+              onOpen={toggleDrawer(true)}
+              swipeAreaWidth={drawerBleeding}
+              disableSwipeToOpen={false}
+              ModalProps={{
+                keepMounted: true,
+              }}
+            >
+              <StyledBox
+                sx={{
+                  backgroundColor: "blue",
+                  color: "white",
+                  position: "absolute",
+                  top: -drawerBleeding,
+                  borderTopLeftRadius: 8,
+                  borderTopRightRadius: 8,
+                  visibility: "visible",
+                  right: 0,
+                  left: 0,
+                  width: "20%",
+                }}
+                onClick={toggleDrawer(true)}
+              >
+                {/* <Puller /> */}
+                <Typography sx={{ p: 2, color: "white" }}>Chats ^</Typography>
+              </StyledBox>
+              <StyledBox
+                sx={{
+                  px: 2,
+                  pb: 2,
+                  height: "100%",
+                  overflow: "auto",
+                  width: "20%",
+                }}
+              >
+                {usersList
+                  ?.filter((el) => {
+                    if (el.id !== data.id) return true;
+                    else return false;
+                  })
+                  .map((ele) => {
+                    return (
+                      <div key={ele.id} className="h-[85px]">
+                        <List component="nav" aria-label="mailbox folders">
+                          <ListItem>
+                            <Avatar alt={ele.name} src={ele.profilepicture} />{" "}
+                            &nbsp;
+                            <ListItemText primary={ele.name} />
+                            &nbsp;
+                            <Radio
+                              color="success"
+                              readOnly={true}
+                              checked={
+                                ele.id % 2 == 0 || ele.id == 3 ? true : false
+                              }
+                            />
+                          </ListItem>
+                          <Divider />
+                        </List>
+                      </div>
+                    );
+                  })}
+                {/* <Skeleton variant="rectangular" height="100%" /> */}
+              </StyledBox>
+            </SwipeableDrawer>
+          </Root>
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 };
