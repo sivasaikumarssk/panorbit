@@ -19,41 +19,17 @@ import Button from "@mui/material/Button";
 import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-// const style = {
-//   position: "absolute",
-//   top: "50%",
-//   left: "50%",
-//   transform: "translate(-50%, -50%)",
-//   width: 400,
-//   bgcolor: "background.paper",
-//   border: "2px solid #000",
-//   boxShadow: 24,
-//   p: 4,
-// };
 
 // chat drawer constants
 const drawerBleeding = 56;
 
+// chat drawer css
 const Root = styled("div")(({ theme }) => ({
   height: "100%",
-  backgroundColor:
-    theme.palette.mode === "light"
-      ? grey[100]
-      : theme.palette.background.default,
 }));
 
 const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "light" ? "#fff" : grey[800],
-}));
-
-const Puller = styled(Box)(({ theme }) => ({
-  width: 30,
-  height: 6,
-  backgroundColor: theme.palette.mode === "light" ? grey[300] : grey[900],
-  borderRadius: 3,
-  position: "absolute",
-  top: 8,
-  left: "calc(50% - 15px)",
 }));
 
 const Profile = ({ index }, props) => {
@@ -62,6 +38,11 @@ const Profile = ({ index }, props) => {
   const [openChat, setOpenChat] = React.useState(false);
   const toggleDrawer = (newOpen) => () => {
     setOpenChat(newOpen);
+  };
+
+  const handleChatOpen = () => {
+    console.log(openChat);
+    setOpenChat(!openChat);
   };
   const container =
     window !== undefined ? () => window().document.body : undefined;
@@ -241,10 +222,10 @@ const Profile = ({ index }, props) => {
               <br />
               <strong className="mr-[20%]">{data.name}</strong>
               <div className="text-start">
-                Username : {data?.username} <br />
-                email : {data?.email} <br />
-                Phone : {data?.phone} <br />
-                Website : {data?.website} <br />
+                Username : <strong>{data?.username}</strong> <br />
+                email : <strong>{data?.email}</strong> <br />
+                Phone : <strong>{data?.phone}</strong> <br />
+                Website : <strong>{data?.website}</strong> <br />
               </div>
               <div
                 style={{
@@ -254,9 +235,10 @@ const Profile = ({ index }, props) => {
               ></div>
               <h3>Company</h3>
               <div className="text-start">
-                Name : {data?.company?.name} <br />
-                catchphrase : {data?.company?.catchPhrase} <br />
-                bs : {data?.company?.bs} <br />
+                Name : <strong>{data?.company?.name}</strong> <br />
+                catchphrase : <strong>{data?.company?.catchPhrase}</strong>
+                <br />
+                bs : <strong>{data?.company?.bs}</strong> <br />
               </div>
             </div>
 
@@ -264,10 +246,10 @@ const Profile = ({ index }, props) => {
               <div>
                 Address : <br />
               </div>
-              Street : {address?.street} <br />
-              Suite : {address?.suite} <br />
-              City : {address?.city} <br />
-              Zipcode : {address?.zipcode} <br />
+              Street : <strong>{address?.street} </strong> <br />
+              Suite : <strong>{address?.suite} </strong> <br />
+              City : <strong>{address?.city} </strong> <br />
+              Zipcode : <strong>{address?.zipcode} </strong> <br />
             </div>
             {/* google map based on lat and lng */}
             <div className="absolute top-[50%] ml-[20%] ">
@@ -276,6 +258,7 @@ const Profile = ({ index }, props) => {
                 height="300px"
                 width="200%"
                 className="rounded-3xl "
+                title="map"
               ></iframe>
               <small className="flex ml-[140%] w-[90%]">
                 Lat : {address?.geo?.lat} &nbsp; Long : {address?.geo?.lng}
@@ -290,95 +273,102 @@ const Profile = ({ index }, props) => {
           />
         )}
       </div>
-      {index === 0 ? (
-        <div className="w-[10%]">
-          <Root>
-            <CssBaseline />
-            <Global
-              styles={{
-                ".MuiDrawer-root > .MuiPaper-root": {
-                  height: `calc(50% - ${drawerBleeding}px)`,
-                  overflow: "visible",
-                },
-              }}
-            />
-            <Box sx={{ textAlign: "center", pt: 1 }}>
-              <Button onClick={toggleDrawer(true)}>Open</Button>
-            </Box>
-            <SwipeableDrawer
-              container={container}
-              anchor="bottom"
-              open={openChat}
-              onClose={toggleDrawer(false)}
-              onOpen={toggleDrawer(true)}
-              swipeAreaWidth={drawerBleeding}
-              disableSwipeToOpen={false}
-              ModalProps={{
-                keepMounted: true,
+      {/* chat drawer */}
+      <div className="w-[10%]">
+        <Root>
+          <CssBaseline />
+          <Global
+            styles={{
+              ".MuiDrawer-root > .MuiPaper-root": {
+                height: `calc(50% - ${drawerBleeding}px)`,
+                overflow: "visible",
+                width: "18%",
+                marginLeft: "80%",
+              },
+            }}
+          />
+
+          <SwipeableDrawer
+            allowSwipeInChildren={true}
+            container={container}
+            anchor="bottom"
+            open={openChat}
+            onClose={toggleDrawer(false)}
+            onOpen={toggleDrawer(true)}
+            swipeAreaWidth={drawerBleeding}
+            disableSwipeToOpen={false}
+            ModalProps={{
+              keepMounted: true,
+            }}
+            onClick={handleChatOpen}
+          >
+            <StyledBox
+              sx={{
+                backgroundColor: "blue",
+                color: "white",
+                position: "absolute",
+                top: -drawerBleeding,
+                borderTopLeftRadius: 8,
+                borderTopRightRadius: 8,
+                visibility: "visible",
+                right: 0,
+                left: 0,
+                width: "100%",
               }}
             >
-              <StyledBox
+              <Typography
                 sx={{
-                  backgroundColor: "blue",
+                  p: 2,
                   color: "white",
-                  position: "absolute",
-                  top: -drawerBleeding,
-                  borderTopLeftRadius: 8,
-                  borderTopRightRadius: 8,
-                  visibility: "visible",
-                  right: 0,
-                  left: 0,
-                  width: "20%",
-                }}
-                onClick={toggleDrawer(true)}
-              >
-                {/* <Puller /> */}
-                <Typography sx={{ p: 2, color: "white" }}>Chats ^</Typography>
-              </StyledBox>
-              <StyledBox
-                sx={{
-                  px: 2,
-                  pb: 2,
-                  height: "100%",
-                  overflow: "auto",
-                  width: "20%",
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  cursor: "pointer",
                 }}
               >
-                {usersList
-                  ?.filter((el) => {
-                    if (el.id !== data.id) return true;
-                    else return false;
-                  })
-                  .map((ele) => {
-                    return (
-                      <div key={ele.id} className="h-[85px]">
-                        <List component="nav" aria-label="mailbox folders">
-                          <ListItem>
-                            <Avatar alt={ele.name} src={ele.profilepicture} />{" "}
-                            &nbsp;
-                            <ListItemText primary={ele.name} />
-                            &nbsp;
-                            <Radio
-                              color="success"
-                              readOnly={true}
-                              checked={
-                                ele.id % 2 == 0 || ele.id == 3 ? true : false
-                              }
-                            />
-                          </ListItem>
-                          <Divider />
-                        </List>
-                      </div>
-                    );
-                  })}
-                {/* <Skeleton variant="rectangular" height="100%" /> */}
-              </StyledBox>
-            </SwipeableDrawer>
-          </Root>
-        </div>
-      ) : (
-        ""
-      )}
+                Chats <span className="absolute top-5 right-5"> ^</span>
+              </Typography>
+            </StyledBox>
+            <StyledBox
+              sx={{
+                px: 2,
+                pb: 2,
+                height: "100%",
+                overflow: "auto",
+                width: "100%",
+              }}
+            >
+              {usersList
+                ?.filter((el) => {
+                  if (el.id !== data.id) return true;
+                  else return false;
+                })
+                .map((ele) => {
+                  return (
+                    <div key={ele.id} className="h-[85px]">
+                      <List component="nav" aria-label="mailbox folders">
+                        <ListItem>
+                          <Avatar alt={ele.name} src={ele.profilepicture} />{" "}
+                          &nbsp;
+                          <ListItemText primary={ele.name} />
+                          &nbsp;
+                          <Radio
+                            color="success"
+                            readOnly={true}
+                            checked={
+                              ele.id % 2 === 0 || ele.id === 3 ? true : false
+                            }
+                          />
+                        </ListItem>
+                        <Divider />
+                      </List>
+                    </div>
+                  );
+                })}
+              {/* <Skeleton variant="rectangular" height="100%" /> */}
+            </StyledBox>
+          </SwipeableDrawer>
+        </Root>
+      </div>
     </div>
   );
 };
